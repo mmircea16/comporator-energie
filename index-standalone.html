@@ -66,11 +66,19 @@
             background-color: white;
             cursor: pointer;
             transition: border-color 0.3s ease;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23666" d="M2 0L0 2h4z"/><path fill="%23666" d="M0 3L2 5 4 3z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
         }
         
         select:focus {
             outline: none;
             border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
         }
         
         .output {
@@ -276,6 +284,26 @@
             }
         }
         
+        /* Tablet and larger mobile devices */
+        @media (max-width: 768px) and (min-width: 481px) {
+            select {
+                width: 100%;
+                max-width: 400px;
+                padding: 14px 18px;
+                font-size: 17px;
+                min-height: 52px;
+                border-radius: 10px;
+                margin: 8px 0;
+                box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+            }
+            
+            select:focus {
+                transform: translateY(-1px);
+                box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.12);
+            }
+        }
+        
+        /* Mobile phones */
         @media (max-width: 480px) {
             .container {
                 margin: 5px auto;
@@ -288,6 +316,45 @@
             
             h3 {
                 font-size: 1.1em;
+            }
+            
+            /* Mobile-optimized dropdown */
+            select {
+                width: 100%;
+                max-width: 350px;
+                min-width: auto;
+                padding: 16px 20px;
+                font-size: 18px;
+                min-height: 56px;
+                border: 3px solid #007bff;
+                border-radius: 12px;
+                background-color: #f8f9fa;
+                background-position: right 16px center;
+                background-size: 16px;
+                margin: 10px 0;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                text-align-last: center;
+            }
+            
+            select:focus {
+                border-color: #0056b3;
+                background-color: white;
+                box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.15);
+                transform: translateY(-1px);
+            }
+            
+            /* Mobile dropdown option styling */
+            select option {
+                padding: 12px;
+                font-size: 16px;
+                background-color: white;
+                color: #333;
+            }
+            
+            select option:first-child {
+                color: #666;
+                font-style: italic;
             }
             
             .offer-card {
