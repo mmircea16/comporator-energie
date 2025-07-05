@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Energy Offers Comparator - Romania</title>
+    <title>Comparator Oferte Energie - România</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -3853,16 +3853,16 @@
 
             return (
                 <div className="container">
-                    <h1>🔌 Energy Offers Comparator</h1>
-                    <p>Compare electricity offers across Romanian counties</p>
+                    <h1>🔌 Comparator Oferte Energie</h1>
+                    <p>Compară ofertele de electricitate din județele României</p>
                     
                     <div style={{ marginTop: '30px' }}>
-                        <h3>Select a Romanian County:</h3>
+                        <h3>Selectează un județ românesc:</h3>
                         <select 
                             value={selectedCounty} 
                             onChange={handleCountyChange}
                         >
-                            <option value="">-- Choose a county --</option>
+                            <option value="">-- Alege un județ --</option>
                             {counties.map(county => (
                                 <option key={county} value={county}>
                                     {county}
@@ -3872,17 +3872,17 @@
                         
                         {selectedCounty && (
                             <div className="output" style={{ marginTop: '15px' }}>
-                                <strong>{selectedCounty}</strong> is in <strong>Zone {countyToZoneMapping[selectedCounty]}</strong>
+                                <strong>{selectedCounty}</strong> se află în <strong>Zona {countyToZoneMapping[selectedCounty]}</strong>
                             </div>
                         )}
                     </div>
 
                     {selectedCounty && (
                         <div style={{ marginTop: '30px' }}>
-                            <h3>Available Offers for {selectedCounty} (Zone {countyToZoneMapping[selectedCounty]})</h3>
+                            <h3>Oferte Disponibile pentru {selectedCounty} (Zona {countyToZoneMapping[selectedCounty]})</h3>
                             
                             {loading && (
-                                <div className="loading">Loading offers...</div>
+                                <div className="loading">Se încarcă ofertele...</div>
                             )}
                             
                             {offers.length > 0 && (
@@ -3890,10 +3890,10 @@
                                     <table className="offers-table">
                                         <thead>
                                             <tr>
-                                                <th>Offer Name</th>
-                                                <th>Supplier</th>
-                                                <th>Final Price (lei/kWh)</th>
-                                                <th>Contract Period</th>
+                                                <th>Numele Ofertei</th>
+                                                <th>Furnizor</th>
+                                                <th>Preț Final (lei/kWh)</th>
+                                                <th>Perioada Contract</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -3914,7 +3914,7 @@
                             
                             {offers.length > 0 && (
                                 <div className="stats">
-                                    Showing {offers.length} offers for Zone {countyToZoneMapping[selectedCounty]}
+                                    Se afișează {offers.length} oferte pentru Zona {countyToZoneMapping[selectedCounty]}
                                 </div>
                             )}
                         </div>
