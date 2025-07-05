@@ -156,15 +156,70 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             margin: 10px 0;
-            padding: 15px;
             text-align: left;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             transition: box-shadow 0.3s ease;
+            cursor: pointer;
+            perspective: 1000px;
+            height: 200px;
         }
         
         .offer-card:hover {
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
         }
+        
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: left;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .offer-card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .card-back {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #333;
+            transform: rotateY(180deg);
+            border: 1px solid #dee2e6;
+        }
+        
+        .card-back .card-field {
+            color: #333;
+            margin: 4px 0;
+        }
+        
+        .card-back .card-label {
+            color: #666;
+        }
+        
+        .card-back .card-value {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .energy-icon {
+            font-size: 1.2em;
+            margin-right: 4px;
+        }
+        
+
         
         .offer-card .card-header {
             font-weight: bold;
@@ -358,8 +413,8 @@
             }
             
             .offer-card {
-                padding: 12px;
                 margin: 8px 0;
+                height: 180px;
             }
             
             .offer-card .card-header {
@@ -372,6 +427,10 @@
             
             .offer-card .card-label {
                 min-width: 80px;
+            }
+            
+            .card-front, .card-back {
+                padding: 12px;
             }
         }
     </style>
@@ -391,15 +450,44 @@
             const [selectedCounty, setSelectedCounty] = React.useState('');
             const [offers, setOffers] = React.useState([]);
             const [loading, setLoading] = React.useState(false);
+            const [flippedCards, setFlippedCards] = React.useState([]);
 
                 // Use zones data from external file
+            if (!window.ZonesData) {
+                return <div>Loading zones data...</div>;
+            }
+            
             const { zonesData, countyToZoneMapping, getCounties } = window.ZonesData;
             const counties = getCounties();
+            
+                        const handleCardClick = (index) => {
+                setFlippedCards(prev => {
+                    if (prev.includes(index)) {
+                        // If the clicked card is already flipped, flip it back (remove from array)
+                        return prev.filter(i => i !== index);
+                    } else {
+                        // If the clicked card is not flipped, flip it and unflip all others
+                        return [index];
+                    }
+                });
+            };
+            
+            const getEnergyIcon = (percentage) => {
+                const value = parseFloat(percentage);
+                if (value >= 80) {
+                    return '🌱'; // Green energy - high renewable
+                } else if (value >= 30) {
+                    return '🟡'; // Medium renewable
+                } else {
+                    return '🔴'; // Low renewable
+                }
+            };
            
 
             const loadOffersForZone = (zoneId) => {
                 setLoading(true);
                 setOffers([]);
+                setFlippedCards([]); // Reset flipped cards when loading new offers
 
                 // Simulate async loading for smooth UX
                 setTimeout(() => {
@@ -480,19 +568,71 @@
                                     {/* Mobile Card View */}
                                     <div className="mobile-cards">
                                         {offers.map((offer, index) => (
-                                            <div key={index} className="offer-card">
-                                                <div className="card-header">{offer.denumire_oferta}</div>
-                                                <div className="card-field">
-                                                    <span className="card-label">Furnizor:</span>
-                                                    <span className="card-value">{offer.nume_furnizor}</span>
-                                                </div>
-                                                <div className="card-field">
-                                                    <span className="card-label">Preț:</span>
-                                                    <span className="card-value price-highlight">{offer.pret_final} lei/kWh</span>
-                                                </div>
-                                                <div className="card-field">
-                                                    <span className="card-label">Contract:</span>
-                                                    <span className="card-value">{offer.perioada_contract}</span>
+                                            <div 
+                                                key={index} 
+                                                className={`offer-card ${flippedCards.includes(index) ? 'flipped' : ''}`}
+                                                onClick={() => handleCardClick(index)}
+                                            >
+                                                <div className="card-inner">
+                                                    {/* Front of card */}
+                                                    <div className="card-front">
+                                                        <div>
+                                                            <div className="card-header">{offer.denumire_oferta}</div>
+                                                            <div className="card-field">
+                                                                <span className="card-label">Furnizor:</span>
+                                                                <span className="card-value">{offer.nume_furnizor}</span>
+                                                            </div>
+                                                            <div className="card-field">
+                                                                <span className="card-label">Preț:</span>
+                                                                <span className="card-value price-highlight">{offer.pret_final} lei/kWh</span>
+                                                            </div>
+                                                            <div className="card-field">
+                                                                <span className="card-label">Contract:</span>
+                                                                <span className="card-value">{offer.perioada_contract}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div style={{ fontSize: '12px', color: '#666', textAlign: 'center' }}>
+                                                            Apasă pentru mai multe detalii
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    {/* Back of card */}
+                                                    <div className="card-back">
+                                                        <div>
+                                                          <div className="card-field">
+                                                                <span className="card-label">Preț final:</span>
+                                                                <span className="card-value">{offer.pret_final} lei/kWh</span>
+                                                            </div>
+                                                            <div className="card-field">
+                                                                <span className="card-label">Furnizor:</span>
+                                                                <span className="card-value">{offer.nume_furnizor}</span>
+                                                            </div>
+                                                            <div className="card-field">
+                                                                <span className="card-label">Perioadă contract:</span>
+                                                                <span className="card-value">{offer.perioada_contract}</span>
+                                                            </div>
+                                                            <div className="card-field">
+                                                                <span className="card-label">Energie regenerabilă:</span>
+                                                                <span className="card-value">
+                                                                    {offer.procent_energie_surse_regenerabile ? 
+                                                                        <>
+                                                                            <span className="energy-icon">{getEnergyIcon(offer.procent_energie_surse_regenerabile)}</span>
+                                                                            {offer.procent_energie_surse_regenerabile}%
+                                                                        </> : 
+                                                                        'N/A'
+                                                                    }
+                                                                </span>
+                                                            </div>
+                                                            <div className="card-field">
+                                                                <span className="card-label">Mod transmitere:</span>
+                                                                <span className="card-value">{offer.mod_transmitere_plata || offer.mod_transmitere_factura || 'N/A'}</span>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        <div style={{ fontSize: '12px', color: '#666', textAlign: 'center' }}>
+                                                            Apasă pentru înapoi
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         ))}
